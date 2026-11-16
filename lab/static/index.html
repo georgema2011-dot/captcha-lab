@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101816">
+  <title>CAPTCHA Lab</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/lab.js" type="module"></script>
+</head>
+<body>
+  <header class="top">
+    <div class="shell top-inner">
+      <a class="brand" href="/"><span aria-hidden="true">▦</span> CAPTCHA LAB</a>
+      <span class="local">Local workspace</span>
+    </div>
+  </header>
+  <main class="shell">
+    <div class="intro">
+      <h1>Test bench<span>.</span></h1>
+      <p>Verify CAPTCHA integrations against provider test keys, or read simple first-party challenges offline.</p>
+    </div>
+    <div class="panels">
+      <section class="panel" aria-labelledby="verify-title">
+        <div class="panel-heading"><h2 id="verify-title">Provider verification</h2><span>Online</span></div>
+        <p>Run the widget and inspect its server-side verification result.</p>
+        <label for="scenario">Test scenario</label>
+        <select id="scenario">
+          <optgroup label="Google reCAPTCHA">
+            <option value="recaptcha-v2">reCAPTCHA v2 · Test checkbox</option>
+            <option value="recaptcha-v3">reCAPTCHA v3 · Development score</option>
+          </optgroup>
+          <optgroup label="hCaptcha">
+            <option value="hcaptcha">hCaptcha · Test checkbox</option>
+          </optgroup>
+          <optgroup label="Cloudflare Turnstile">
+            <option value="turnstile-pass">Turnstile · Accept token</option>
+            <option value="turnstile-reject">Turnstile · Reject token</option>
+            <option value="turnstile-duplicate">Turnstile · Simulate duplicate</option>
+          </optgroup>
+        </select>
+        <p class="hint" id="provider-hint">Loading test scenarios…</p>
+        <button id="run" type="button" disabled>Run test <span aria-hidden="true">↗</span></button>
+        <div id="widget"></div>
+        <div class="result" role="status" id="provider-result">Waiting for a test.</div>
+      </section>
+      <section class="panel" aria-labelledby="ocr-title">
+        <div class="panel-heading"><h2 id="ocr-title">Image OCR</h2><span>Offline</span></div>
+        <p>Read a single line from a generated sample or an image you own.</p>
+        <label for="image">Challenge image</label>
+        <input id="image" type="file" accept="image/png,image/jpeg,image/webp">
+        <p class="hint">PNG, JPEG or WebP · Up to 2 MB and 2 million pixels</p>
+        <div class="buttons">
+          <button id="recognize" type="button" disabled>Read image <span aria-hidden="true">↗</span></button>
+          <button id="sample" type="button" class="quiet">Try a sample</button>
+        </div>
+        <img id="preview" alt="Selected challenge preview" hidden>
+        <div class="result" role="status" id="ocr-result">Waiting for an image.</div>
+      </section>
+    </div>
+    <footer>For authorized development and testing.</footer>
+  </main>
+</body>
+</html>

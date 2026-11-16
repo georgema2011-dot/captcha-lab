@@ -1,0 +1,16 @@
+services:
+  lab:
+    build: .
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      RECAPTCHA_V3_SITE_KEY: ${RECAPTCHA_V3_SITE_KEY:-}
+      RECAPTCHA_V3_SECRET_KEY: ${RECAPTCHA_V3_SECRET_KEY:-}
+      RECAPTCHA_V3_MIN_SCORE: ${RECAPTCHA_V3_MIN_SCORE:-0.5}
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    pids_limit: 64

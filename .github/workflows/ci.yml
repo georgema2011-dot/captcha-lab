@@ -1,0 +1,30 @@
+name: CI
+
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: 'requirements*.txt'
+      - run: sudo apt-get update && sudo apt-get install -y tesseract-ocr tesseract-ocr-eng
+      - run: python -m pip install -r requirements-dev.txt
+      - run: python -m pytest --cov=lab --cov-report=term-missing --cov-fail-under=85
+      - run: node --check lab/static/lab.js
+      - name: Smoke test the Compose service and its real OCR engine
+        run: |
+          docker compose up --build --wait --wait-timeout 120
+          curl -fsS http://127.0.0.1:8000/health | python -c 'import sys,json; assert json.load(sys.stdin)["ocr_available"]'
+          curl -fsS http://127.0.0.1:8000/api/ocr/sample -o /tmp/captcha-sample.png
+          curl -fsS -H 'Content-Type: image/png' --data-binary @/tmp/captcha-sample.png http://127.0.0.1:8000/api/ocr | python -c 'import sys,json; assert json.load(sys.stdin)["text"]'
+      - if: always()
+        run: docker compose down
